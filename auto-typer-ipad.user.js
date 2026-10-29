@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Auto Typer voor Google Docs
 // @namespace    https://github.com/Wander2026projects/Auto-typer
-// @version      1.1.0
+// @version      1.1.1
 // @description  Typt geplakte tekst letter voor letter in Google Docs, met instelbare snelheid (woorden per minuut), menselijke variatie, pauzes en tikfouten. Met Verbeter-typer: past alleen de veranderde woorden aan.
 // @author       Wander2026projects
 // @match        https://docs.google.com/document/*
@@ -149,13 +149,8 @@
     if (IS_IOS || method === 'input') {
       const doc = el.ownerDocument;
       if (el.focus) el.focus({ preventScroll: true });
-      if (IS_IOS) {
-        try {
-          el.dispatchEvent(new InputEvent('beforeinput', {
-            inputType: 'insertText', data: ch, bubbles: true, cancelable: true
-          }));
-        } catch (_) {}
-      }
+      // Gebruik één invoermechanisme. Een handmatig beforeinput-event naast
+      // execCommand kan in Safari/Google Docs hetzelfde teken dubbel verwerken.
       doc.execCommand('insertText', false, ch);
     } else {
       el.dispatchEvent(keyEvent('keypress', ch, codeFor(ch), ch.codePointAt(0)));
